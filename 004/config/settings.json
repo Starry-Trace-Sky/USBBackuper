@@ -1,3 +1,5 @@
 {
-    "f_name_format": "both"
+    "f_name_format": "both",
+    "disk_choice": "all",
+    "file_format": "all"
 }
