@@ -1,5 +1,6 @@
 {
     "f_name_format": "both",
+    "file_format": "all",
     "disk_choice": "all",
-    "file_format": "all"
+    "folder_position": "E:/peng/Download"
 }

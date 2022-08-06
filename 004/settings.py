@@ -3,8 +3,10 @@ import json
 
 file = 'config/settings.json'
 
-def add_settings(key, value):
-    """添加设置"""
+def add_settings(key, value, utf_eight_code=0):
+    """添加设置
+    key和value均为字符串,对应键和值
+    utf_eight_code为utf-8保存,默认未选择,选择传入1"""
     # 检查配置文件是否存在
     
     activate = False
@@ -15,11 +17,19 @@ def add_settings(key, value):
         with open(file, 'w') as f:
             activate = True
             pass
+    # 文件是否为空
+    with open(file) as f:
+        content = f.readlines()
+    if content == []:
+        activate = True
     # 写入配置
     if activate:
         with open(file, 'a') as f:
             content_dict = {key:value}
-            json.dump(content_dict, f, indent=4, ensure_ascii=False)
+            if utf_eight_code == 0:
+                json.dump(content_dict, f, indent=4, ensure_ascii=False)
+            elif utf_eight_code == 1:
+                json.dump(content_dict, f, indent=4, ensure_ascii=False, encoding='utf-8')
     elif not activate:
         with open(file) as f:
             file_content = json.load(f)

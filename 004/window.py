@@ -1,10 +1,10 @@
 import tkinter as tk
 import sys, os
 import threading
+from tkinter.filedialog import askdirectory
 
 from log import Log
 from settings import add_settings
-from run import f_run_b
 
 
 root = tk.Tk()
@@ -139,12 +139,29 @@ def f_look_config_b():
     look_th = threading.Thread(target=func, daemon=True)
     look_th.start()
 
+def f_folder_b():
+    """目的文件夹选择"""
+    folder_position = askdirectory()
+    if folder_position != '':
+        add_settings('folder_position', folder_position)
+
+def F_run_b():
+    """开始备份"""
+    print('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe')
+    os.system('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe')
+
+def f_cancel_b():
+    """取消备份"""
+    os.system('taskkill /f /im run.exe')
+    os.system('taskkill /f /im run.exe')
+
+#====================================================================================================================================
+
 def run_window():
     """运行设置录入窗口"""
     global root
     root.title('USBBackuper (By:Skyler Sun)')
     root.geometry('670x500+150+150')
-    root.attributes('-alpha', 0.8)
     root.resizable(False, False)
     # 窗口组件
     # 单选框
@@ -160,19 +177,24 @@ def run_window():
     # 退出按钮
     Exit_b = tk.Button(root, text="退出", bg='red', font=(30), width=670, command=Exit_button)
     # 剩余按钮
-    run_b = tk.Button(root, text="开始备份", bg='green', font=(30), width=670, command=f_run_b)
+    run_b = tk.Button(root, text="开始备份(备份在后台运行)", bg='green', font=(30), width=670, command=F_run_b)
     cls_b = tk.Button(root, text="清除日志", bg='blue', font=(30), width=670, command=f_cls_b)
     look_log_b = tk.Button(root, text="查看日志", font=(30), width=670, command=f_look_log_b)
     look_config_b = tk.Button(root, text="查看配置", font=(30), width=670, command=f_look_config_b)
+    cancel_b = tk.Button(root, text="取消备份", font=(30), width=670, command=f_cancel_b)
+    # 备份位置选择按钮
+    folder_b = tk.Button(root, text="点击以选择备份位置", font=(30), command=f_folder_b)
     # 标签
     label1 = tk.Label(root, text="此处选择U盘文件备份后,文件夹的命名方式", fg='red', font=(20))
     label2 = tk.Label(root, text="选择要备份的U盘(按下按钮后在打开的文件里一行输入一个U盘卷标,只输入一行all表明全部)", fg='red', font=(20))
     label3 = tk.Label(root, text="选择备份文件格式(输入方式和上面相同,不带小数点,一行一个)", fg='red', font=(20))
+    label4 = tk.Label(root, text="选择备份位置,请确保目录不包含空格,标点符号", fg='red', font=(20))
     
     # 组件布局
     label1.place(x=0, y=0)
     label2.place(x=0, y=83)
     label3.place(x=0, y=150)
+    label4.place(x=0, y=205)
 
     Rd_b1.place(x=0, y=20)
     Rd_b2.place(x=0, y=40)
@@ -183,11 +205,13 @@ def run_window():
 
     file_format_button.place(x=5, y=175)
     file_format_right_button.place(x=160, y=175)
+    folder_b.place(x=5, y=230)
 
     Exit_b.pack(side='bottom')
     cls_b.pack(side='bottom')
     look_log_b.pack(side='bottom')
     look_config_b.pack(side='bottom')
+    cancel_b.pack(side='bottom')
     run_b.pack(side='bottom')
 
     root.mainloop()
