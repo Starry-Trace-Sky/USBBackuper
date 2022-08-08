@@ -1,6 +1,7 @@
 import psutil, time, shutil, threading, os
 
 from settings import read_settings
+from log import get_time
 
 
 def get_usb_name(volume):
@@ -8,7 +9,7 @@ def get_usb_name(volume):
     if ':' not in volume:
         volume += ':'
     if '/' in volume:
-        volume = volume.split('/')[0]
+        volume = volume.split('/')[0]  # 处理后例如 G
     os.system('fsutil volume queryLabel ' + volume + ' > name.txt')
     path = 'name.txt'
     with open(path) as f:
@@ -20,17 +21,20 @@ def get_usb_name(volume):
     usb_name = ''.join(file_content)
     return usb_name
 
+def f_backup_th(path1):
+        """复制线程"""
+        with open('cache_file.txt', 'w') as f:
+            pass
+        disk_structure = os.walk(path1)
+        for root, dirs, files in disk_structure:
+            for i in files:
+                with open('cache_file.txt', 'a') as f:
+                    f.write(root + i + '\n')
 
 def f_run_b():
     """开始运行"""
     # windows不会分配A,B盘符
     config_info = read_settings()
-    def f_backup_th(path1):
-        """复制线程"""
-        disk_structure = os.walk(path1)
-        for root, dirs, files in disk_structure:
-            print(files)
-
     """检测U盘"""
     older_usb_l = []
     while True:
@@ -44,8 +48,6 @@ def f_run_b():
                 usb_name_list.append(get_usb_name(i.mountpoint))
         older_usb_l = newer_usb_l[:]
         time.sleep(0.1)
-
-    f_check_th()
 
 
 if __name__ == '__main__':
