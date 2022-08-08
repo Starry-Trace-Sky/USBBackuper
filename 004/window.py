@@ -187,7 +187,7 @@ def run_window():
     # 标签
     label1 = tk.Label(root, text="此处选择U盘文件备份后,文件夹的命名方式", fg='red', font=(20))
     label2 = tk.Label(root, text="选择要备份的U盘(按下按钮后在打开的文件里一行输入一个U盘卷标,只输入一行all表明全部)", fg='red', font=(20))
-    label3 = tk.Label(root, text="选择备份文件格式(输入方式和上面相同,不带小数点,一行一个)", fg='red', font=(20))
+    label3 = tk.Label(root, text="选择备份文件格式(输入方式和上面相同,带小数点,一行一个)", fg='red', font=(20))
     label4 = tk.Label(root, text="选择备份位置,请确保目录不包含空格,标点符号", fg='red', font=(20))
     
     # 组件布局
