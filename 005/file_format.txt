@@ -1,0 +1,7 @@
+.ppt
+.pptx
+.doc
+.docx
+.xls
+.xlsx
+.mp3

@@ -1,0 +1,21 @@
+{
+    "f_name_format": "both",
+    "file_format": [
+        ".ppt",
+        ".pptx",
+        ".doc",
+        ".docx",
+        ".xls",
+        ".xlsx",
+        ".mp3",
+        ".mp4",
+        ".jpg",
+        ".png",
+        ".zip",
+        ".rar",
+        ".exe",
+        ".7z"
+    ],
+    "disk_choice": "all",
+    "folder_position": "E:/peng/Download"
+}

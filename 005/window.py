@@ -1,5 +1,7 @@
-import tkinter as tk
-import sys, os, threading, subprocess
+from tkinter import Tk, IntVar, Radiobutton, Button, Label
+from subprocess import call
+from threading import Thread
+import sys, os
 from tkinter.filedialog import askdirectory
 
 from log import Log
@@ -7,11 +9,11 @@ from settings import add_settings
 
 
 CREATE_NO_WINDOW = 0x08000000
-root = tk.Tk()
+root = Tk()
 file_name_format = None
-Rd_b1_status = tk.IntVar()
-Rd_b2_status = tk.IntVar()
-Rd_b3_status = tk.IntVar()
+Rd_b1_status = IntVar()
+Rd_b2_status = IntVar()
+Rd_b3_status = IntVar()
 Rd_b1_status.set(0)
 Rd_b2_status.set(0)
 Rd_b3_status.set(0)
@@ -59,7 +61,7 @@ def f_disk_button():
     with open('disk_choices.txt', 'w') as f:
         pass
     Log("创建U盘选择配置文件成功")
-    subprocess.call('notepad.exe disk_choices.txt', creationflags=CREATE_NO_WINDOW)
+    call('notepad.exe disk_choices.txt', creationflags=CREATE_NO_WINDOW)
 
 def f_disk_right_button():
     """确认U盘选择"""
@@ -92,7 +94,7 @@ def f_file_format_button():
     with open('file_format.txt', 'w') as f:
         pass
     Log("创建备份文件格式配置文件成功")
-    subprocess.call('notepad.exe file_format.txt', creationflags=CREATE_NO_WINDOW)
+    call('notepad.exe file_format.txt', creationflags=CREATE_NO_WINDOW)
 
 def f_file_format_right_button():
     """文件格式确认"""
@@ -128,15 +130,15 @@ def f_cls_b():
 def f_look_log_b():
     """查询日志"""
     def func():
-        subprocess.call('notepad.exe log/USBBackuper.log', creationflags=CREATE_NO_WINDOW)
-    look_th = threading.Thread(target=func, daemon=True)
+        call('notepad.exe log/USBBackuper.log', creationflags=CREATE_NO_WINDOW)
+    look_th = Thread(target=func, daemon=True)
     look_th.start()
 
 def f_look_config_b():
     """查询配置"""
     def func():
-        subprocess.call('notepad.exe config/settings.json', creationflags=CREATE_NO_WINDOW)
-    look_th = threading.Thread(target=func, daemon=True)
+        call('notepad.exe config/settings.json', creationflags=CREATE_NO_WINDOW)
+    look_th = Thread(target=func, daemon=True)
     look_th.start()
 
 def f_folder_b():
@@ -148,12 +150,12 @@ def f_folder_b():
 def F_run_b():
     """开始备份"""
     print('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe')
-    subprocess.call('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe', creationflags=CREATE_NO_WINDOW)
+    call('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe', creationflags=CREATE_NO_WINDOW)
 
 def f_cancel_b():
     """取消备份"""
-    subprocess.call('taskkill /f /im run.exe', creationflags=CREATE_NO_WINDOW)
-    subprocess.call('taskkill /f /im run.exe', creationflags=CREATE_NO_WINDOW)
+    call('taskkill /f /im run.exe', creationflags=CREATE_NO_WINDOW)
+    call('taskkill /f /im run.exe', creationflags=CREATE_NO_WINDOW)
 
 #====================================================================================================================================
 
@@ -165,30 +167,30 @@ def run_window():
     root.resizable(False, False)
     # 窗口组件
     # 单选框
-    Rd_b1 = tk.Radiobutton(root, text="以U盘名称命名", command=Rd_button_1, variable=Rd_b1_status)
-    Rd_b2 = tk.Radiobutton(root, text="以备份时间命名", command=Rd_button_2, variable=Rd_b2_status)
-    Rd_b3 = tk.Radiobutton(root, text="以备份时间和U盘名称命名(recommended)", command=Rd_button_3, variable=Rd_b3_status)
+    Rd_b1 = Radiobutton(root, text="以U盘名称命名", command=Rd_button_1, variable=Rd_b1_status)
+    Rd_b2 = Radiobutton(root, text="以备份时间命名", command=Rd_button_2, variable=Rd_b2_status)
+    Rd_b3 = Radiobutton(root, text="以备份时间和U盘名称命名(recommended)", command=Rd_button_3, variable=Rd_b3_status)
     # u盘复制按钮
-    disk_button = tk.Button(root, text="添加备份U盘", font=(20), command=f_disk_button)
-    disk_right_button = tk.Button(root, text="确认", font=(20), command=f_disk_right_button)
+    disk_button = Button(root, text="添加备份U盘", font=(20), command=f_disk_button)
+    disk_right_button = Button(root, text="确认", font=(20), command=f_disk_right_button)
     # 文件格式选择按钮
-    file_format_button = tk.Button(root, text="添加备份文件格式", font=(20), command=f_file_format_button)
-    file_format_right_button = tk.Button(root, text="确认", font=(20), command=f_file_format_right_button)
+    file_format_button = Button(root, text="添加备份文件格式", font=(20), command=f_file_format_button)
+    file_format_right_button = Button(root, text="确认", font=(20), command=f_file_format_right_button)
     # 退出按钮
-    Exit_b = tk.Button(root, text="退出", bg='red', font=(30), width=670, command=Exit_button)
+    Exit_b = Button(root, text="退出", bg='red', font=(30), width=670, command=Exit_button)
     # 剩余按钮
-    run_b = tk.Button(root, text="开始备份(备份在后台运行)", bg='green', font=(30), width=670, command=F_run_b)
-    cls_b = tk.Button(root, text="清除日志", bg='blue', font=(30), width=670, command=f_cls_b)
-    look_log_b = tk.Button(root, text="查看日志", font=(30), width=670, command=f_look_log_b)
-    look_config_b = tk.Button(root, text="查看配置", font=(30), width=670, command=f_look_config_b)
-    cancel_b = tk.Button(root, text="取消备份", font=(30), width=670, command=f_cancel_b)
+    run_b = Button(root, text="开始备份(备份在后台运行)", bg='green', font=(30), width=670, command=F_run_b)
+    cls_b = Button(root, text="清除日志", bg='blue', font=(30), width=670, command=f_cls_b)
+    look_log_b = Button(root, text="查看日志", font=(30), width=670, command=f_look_log_b)
+    look_config_b = Button(root, text="查看配置", font=(30), width=670, command=f_look_config_b)
+    cancel_b = Button(root, text="取消备份", font=(30), width=670, command=f_cancel_b)
     # 备份位置选择按钮
-    folder_b = tk.Button(root, text="点击以选择备份位置", font=(30), command=f_folder_b)
+    folder_b = Button(root, text="点击以选择备份位置", font=(30), command=f_folder_b)
     # 标签
-    label1 = tk.Label(root, text="此处选择U盘文件备份后,文件夹的命名方式", fg='red', font=(20))
-    label2 = tk.Label(root, text="选择要备份的U盘(按下按钮后在打开的文件里一行输入一个U盘卷标,只输入一行all表明全部)", fg='red', font=(20))
-    label3 = tk.Label(root, text="选择备份文件格式(输入方式和上面相同,带小数点,一行一个)", fg='red', font=(20))
-    label4 = tk.Label(root, text="选择备份位置,请确保目录不包含空格,标点符号", fg='red', font=(20))
+    label1 = Label(root, text="此处选择U盘文件备份后,文件夹的命名方式", fg='red', font=(20))
+    label2 = Label(root, text="选择要备份的U盘(按下按钮后在打开的文件里一行输入一个U盘卷标,只输入一行all表明全部)", fg='red', font=(20))
+    label3 = Label(root, text="选择备份文件格式(输入方式和上面相同,带小数点,一行一个)", fg='red', font=(20))
+    label4 = Label(root, text="选择备份位置,请确保目录不包含空格,标点符号", fg='red', font=(20))
     
     # 组件布局
     label1.place(x=0, y=0)

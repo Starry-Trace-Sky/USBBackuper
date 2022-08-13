@@ -1,12 +1,17 @@
-import time, shutil, threading, os, subprocess
+from time import sleep
+from os import mkdir, walk
+from shutil import copyfile, copytree
+from subprocess import call
+from threading import Thread
+from psutil import disk_partitions
 
-import psutil
 from settings import read_settings
 from log import get_time
 
 
 CREATE_NO_WINDOW = 0x08000000
 config_info = read_settings()
+
 
 def get_usb_name(volume):
     """通过cmd获取u盘卷名"""
@@ -16,8 +21,8 @@ def get_usb_name(volume):
     if '/' in volume:
         volume = volume.split('/')[0]
     # 隐藏DOS命令黑窗口
-    subprocess.call('fsutil volume queryLabel ' + volume + ' > name.txt', creationflags=CREATE_NO_WINDOW)
-    time.sleep(1)
+    call('fsutil volume queryLabel ' + volume + ' > name.txt', creationflags=CREATE_NO_WINDOW)
+    sleep(1)
     path = 'name.txt'
     with open(path) as f:
         file_content = f.readlines()
@@ -37,7 +42,7 @@ class f_backup_th:
         self.file_l = []
 
     def init(self):
-        self.disk_structure = os.walk(self.path1)
+        self.disk_structure = walk(self.path1)
         self.name = get_usb_name(self.path1)
 
     def get_file(self) -> None:
@@ -59,7 +64,7 @@ class f_backup_th:
             while '/' in now:
                 now = now.replace('/', '-')
             try:
-                os.mkdir(config_info['folder_position'] + '/' + now + self.name)
+                mkdir(config_info['folder_position'] + '/' + now + self.name)
             except FileExistsError:
                 pass
             return config_info['folder_position'] + '/' + now + self.name + '/'
@@ -69,28 +74,28 @@ class f_backup_th:
         result = self.make_dir()
         if config_info['disk_choice'] == 'all':
             if config_info['file_format'] == 'all':
-                shutil.copytree(self.path2, result)
+                copytree(self.path2, result)
             elif config_info['file_format'] != 'all':
                 self.get_file()
                 for i in self.file_l:
                     for ii in config_info['file_format']:
                         if ii in i:
-                            shutil.copyfile(i, result + i.split('/')[-1])
+                            copyfile(i, result + i.split('/')[-1])
         elif config_info['disk_choice'] != 'all':
             if self.name in config_info['disk_choice']:
                 if config_info['file_format'] == 'all':
-                    shutil.copytree(self.path2, result)
+                    copytree(self.path2, result)
                 elif config_info['file_format'] != 'all':
                     self.get_file()
                     for i in self.file_l:
                         for ii in config_info['file_format']:
                             if ii in i:
-                                shutil.copyfile(i, result)
+                                copyfile(i, result)
 
     def run(self):
         """开始运行"""
         self.init()
-        threading.Thread(target=self.run_f, daemon=True).start()
+        Thread(target=self.run_f, daemon=True).start()
 
 
 def f_run_b():
@@ -127,7 +132,7 @@ def f_run_b():
                     'V:\\':v_th, 'W:\\':w_th, 'X:\\':x_th, 'Y:\\':y_th, 'Z:\\':z_th}
     while True:
         newer_usb_l = []
-        disks = psutil.disk_partitions()
+        disks = disk_partitions()
         # 获取当前USB设备列表
         for i in disks:
             if 'removable' in i.opts:
@@ -137,7 +142,7 @@ def f_run_b():
                 # 新增的U盘处理
                 th_directory[i].run()
         older_usb_l = newer_usb_l[:]
-        time.sleep(0.1)
+        sleep(0.1)
 
 
 if __name__ == '__main__':
