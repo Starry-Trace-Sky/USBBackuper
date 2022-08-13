@@ -1,11 +1,9 @@
-import time, shutil, threading, os, subprocess
+import psutil, time, shutil, threading, os
 
-import psutil
 from settings import read_settings
 from log import get_time
 
 
-CREATE_NO_WINDOW = 0x08000000
 config_info = read_settings()
 
 def get_usb_name(volume):
@@ -15,8 +13,7 @@ def get_usb_name(volume):
         volume += ':'
     if '/' in volume:
         volume = volume.split('/')[0]
-    # 隐藏DOS命令黑窗口
-    subprocess.call('fsutil volume queryLabel ' + volume + ' > name.txt', creationflags=CREATE_NO_WINDOW)
+    os.system('fsutil volume queryLabel ' + volume + ' > name.txt')
     time.sleep(1)
     path = 'name.txt'
     with open(path) as f:

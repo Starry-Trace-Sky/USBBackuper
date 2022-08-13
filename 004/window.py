@@ -1,12 +1,12 @@
 import tkinter as tk
-import sys, os, threading, subprocess
+import sys, os
+import threading
 from tkinter.filedialog import askdirectory
 
 from log import Log
 from settings import add_settings
 
 
-CREATE_NO_WINDOW = 0x08000000
 root = tk.Tk()
 file_name_format = None
 Rd_b1_status = tk.IntVar()
@@ -59,7 +59,7 @@ def f_disk_button():
     with open('disk_choices.txt', 'w') as f:
         pass
     Log("创建U盘选择配置文件成功")
-    subprocess.call('notepad.exe disk_choices.txt', creationflags=CREATE_NO_WINDOW)
+    os.system('notepad.exe disk_choices.txt')
 
 def f_disk_right_button():
     """确认U盘选择"""
@@ -92,7 +92,7 @@ def f_file_format_button():
     with open('file_format.txt', 'w') as f:
         pass
     Log("创建备份文件格式配置文件成功")
-    subprocess.call('notepad.exe file_format.txt', creationflags=CREATE_NO_WINDOW)
+    os.system('notepad.exe file_format.txt')
 
 def f_file_format_right_button():
     """文件格式确认"""
@@ -128,14 +128,14 @@ def f_cls_b():
 def f_look_log_b():
     """查询日志"""
     def func():
-        subprocess.call('notepad.exe log/USBBackuper.log', creationflags=CREATE_NO_WINDOW)
+        os.system('notepad.exe log/USBBackuper.log')
     look_th = threading.Thread(target=func, daemon=True)
     look_th.start()
 
 def f_look_config_b():
     """查询配置"""
     def func():
-        subprocess.call('notepad.exe config/settings.json', creationflags=CREATE_NO_WINDOW)
+        os.system('notepad.exe config/settings.json')
     look_th = threading.Thread(target=func, daemon=True)
     look_th.start()
 
@@ -148,12 +148,12 @@ def f_folder_b():
 def F_run_b():
     """开始备份"""
     print('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe')
-    subprocess.call('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe', creationflags=CREATE_NO_WINDOW)
+    os.system('start ' + os.path.split(os.path.realpath(sys.argv[0]))[0] + r'\run\run.exe')
 
 def f_cancel_b():
     """取消备份"""
-    subprocess.call('taskkill /f /im run.exe', creationflags=CREATE_NO_WINDOW)
-    subprocess.call('taskkill /f /im run.exe', creationflags=CREATE_NO_WINDOW)
+    os.system('taskkill /f /im run.exe')
+    os.system('taskkill /f /im run.exe')
 
 #====================================================================================================================================
 
